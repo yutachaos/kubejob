@@ -239,9 +239,11 @@ func (j *Job) getPod(ctx context.Context, name string) (*corev1.Pod, error) {
 }
 
 func (j *Job) wait(ctx context.Context) error {
+	timeout := int64(60 * 60 * 24)
 	watcher, err := j.podClient.Watch(ctx, metav1.ListOptions{
-		LabelSelector: j.labelSelector(),
-		Watch:         true,
+		LabelSelector:  j.labelSelector(),
+		Watch:          true,
+		TimeoutSeconds: &timeout,
 	})
 	if err != nil {
 		return errJobWatch(j.Name, err)
